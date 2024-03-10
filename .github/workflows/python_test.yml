@@ -14,11 +14,8 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Setup Poetry
-        uses: Gr1N/setup-poetry@v7
-
       - name: Run poetry install
-        run: poetry install
+        run: pip install pytest
 
       - name: Run tests
-        run: poetry run python -m pytest
+        run: python -m pytest
