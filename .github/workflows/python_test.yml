@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - main
+    labeled:
+      - test
   workflow_dispatch:
 
 jobs:
