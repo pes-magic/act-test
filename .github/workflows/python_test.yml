@@ -2,6 +2,11 @@ name: Run Python Tests
 
 on:
   pull_request:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -14,7 +19,7 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Run poetry install
+      - name: Install pytest
         run: pip install pytest
 
       - name: Run tests
