@@ -5,8 +5,7 @@ on:
     branches_ignored:
       - main
     paths:
-      - "tests/**"
-      - "src/**"
+      - "py_project/**"
 
 jobs:
   test_on_dev:
