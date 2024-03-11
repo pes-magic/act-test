@@ -6,5 +6,5 @@ on:
       - main
 
 jobs:
-  test:
+  test_on_main:
     uses: ./.github/workflows/python_test.yml
