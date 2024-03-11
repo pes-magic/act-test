@@ -1,0 +1,10 @@
+name: Run Python Tests (main)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test_on_main:
+    uses: ./.github/workflows/python_test.yml
