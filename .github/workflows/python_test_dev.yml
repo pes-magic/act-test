@@ -10,7 +10,4 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run test
-        uses: ./.github/workflows/python_test.yml
+    uses: ./.github/workflows/python_test.yml

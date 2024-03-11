@@ -7,17 +7,4 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Python Setup
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.11
-
-      - name: Install pytest
-        run: pip install pytest
-
-      - name: Run tests
-        run: python -m pytest
+    uses: ./.github/workflows/python_test.yml
