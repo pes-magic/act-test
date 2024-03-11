@@ -1,0 +1,13 @@
+name: Run Python Tests (dev)
+
+on:
+  pull_request:
+    branches_ignored:
+      - main
+    paths:
+      - "tests/**"
+      - "src/**"
+
+jobs:
+  test_on_dev:
+    uses: ./.github/workflows/python_test.yml
