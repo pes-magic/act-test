@@ -1,8 +1,9 @@
 name: Run Python Tests
 
 on:
-  workflow_dispatch:
-  workflow_call:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -20,8 +21,3 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
-  hello:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run a one-line script
-        run: echo Hello, world!

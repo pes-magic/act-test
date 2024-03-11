@@ -1,0 +1,16 @@
+name: Run Python Tests
+
+on:
+  pull_request:
+    branches_ignored:
+      - main
+    paths:
+      - "tests/**"
+      - "src/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run test
+        uses: ./.github/workflows/python_test.yml
