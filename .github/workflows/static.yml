@@ -32,11 +32,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Download artifact
-      uses: actions/download-artifact@v3
+    - name: List artifacts
+      id: artifacts
+      uses: actions/github-script@v6
       with:
-        name: github-pages
-        path: uploaded
+        script: |
+          let artifacts = await github.rest.actions.listArtifactsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+
+          let artifactNames = artifacts.data.artifacts.map(a => a.name);
+          console.log(`Found artifacts: ${artifactNames.join(", ")}`);
+
+          return artifactNames;
+
+        result-encoding: string
+
+    - name: Print artifact names
+      run: |
+        echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
 
     - name: Get current date in JST
       id: date
@@ -58,3 +73,24 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v2
+
+    - name: List artifacts
+      id: artifacts
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let artifacts = await github.rest.actions.listArtifactsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+
+          let artifactNames = artifacts.data.artifacts.map(a => a.name);
+          console.log(`Found artifacts: ${artifactNames.join(", ")}`);
+
+          return artifactNames;
+
+        result-encoding: string
+
+    - name: Print artifact names
+      run: |
+        echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
