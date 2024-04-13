@@ -32,62 +32,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: List artifacts
-      id: artifacts
-      uses: actions/github-script@v6
-      with:
-        script: |
-          let artifacts = await github.rest.actions.listArtifactsForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-
-          let artifactNames = artifacts.data.artifacts.map(a => a.name);
-          console.log(`Found artifacts: ${artifactNames.join(", ")}`);
-
-          return artifactNames;
-
-        result-encoding: string
-
-    - name: Print artifact names
-      run: |
-        echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
-
-    - name: Get latest Pages deployment
-      id: latest_deployment
-      uses: actions/github-script@v6
-      with:
-        script: |
-          let deployments = await github.rest.repos.listPagesDeployments({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-
-          let latestDeployment = deployments.data[0];
-
-          console.log(`Latest deployment: ${latestDeployment.deployment_id}`);
-
-          return latestDeployment.artifact_url;
-
-        result-encoding: string
-
-    - name: Download Pages artifact
-      uses: actions/download-artifact@v3
-      with:
-        url: ${{ steps.latest_deployment.outputs.result }}
-        path: pages-artifact
-
-    - name: Get current date in JST
-      id: date
-      run: |
-        echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
-      shell: bash
-
-    - name: Build HTML
+    - name: Download Content
       run: |
         mkdir -p out
-        find ./out/ -type f -delete
-        echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
+        curl https://pes-magic.github.io/act-test/index.html --output ./out/index.html
+
+    # - name: Get current date in JST
+    #   id: date
+    #   run: |
+    #     echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
+    #   shell: bash
+
+    # - name: Build HTML
+    #   run: |
+    #     mkdir -p out
+    #     find ./out/ -type f -delete
+    #     echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
