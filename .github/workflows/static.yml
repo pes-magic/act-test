@@ -75,7 +75,7 @@ jobs:
       uses: actions/deploy-pages@v2
 
     - name: List artifacts
-      id: artifacts
+      id: artifacts2
       uses: actions/github-script@v6
       with:
         script: |
@@ -93,4 +93,4 @@ jobs:
 
     - name: Print artifact names
       run: |
-        echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
+        echo "Artifact names: ${{ steps.artifacts2.outputs.result }}"
