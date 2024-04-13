@@ -53,6 +53,17 @@ jobs:
       run: |
         echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
 
+    - name: Check for artifact
+      id: artifact_exist
+      run: echo "::set-output name=artifactExists::true"
+
+    - name: Download artifact
+      if: steps.artifact_exist.outputs.artifactExists == 'true'
+      uses: actions/download-artifact@v3
+      with:
+        name: github-pages
+        path: prevDeploy
+
     - name: Get current date in JST
       id: date
       run: |
@@ -61,7 +72,7 @@ jobs:
 
     - name: Build HTML
       run: |
-        cp -r uploaded out
+        mkdir -p out
         find ./out/ -type f -delete
         echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
 
