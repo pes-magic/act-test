@@ -1,0 +1,22 @@
+name: Get GitHub Pages Architect
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  get-architect:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Get GitHub Pages Architect
+      id: metadata
+      run: |
+        architect=$(git remote show origin | grep 'GitHub Pages' | sed 's/.*GitHub Pages //; s/ //')
+        echo "::set-output name=architect::$architect"
+
+    - name: Show Architect
+      run: echo "GitHub Pages Architect is ${{ steps.metadata.outputs.architect }}"
