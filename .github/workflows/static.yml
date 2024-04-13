@@ -53,16 +53,29 @@ jobs:
       run: |
         echo "Artifact names: ${{ steps.artifacts.outputs.result }}"
 
-    - name: Check for artifact
-      id: artifact_exist
-      run: echo "::set-output name=artifactExists::true"
+    - name: Get latest Pages deployment
+      id: latest_deployment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let deployments = await github.rest.repos.listPagesDeployments({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
 
-    - name: Download artifact
-      if: steps.artifact_exist.outputs.artifactExists == 'true'
+          let latestDeployment = deployments.data[0];
+
+          console.log(`Latest deployment: ${latestDeployment.deployment_id}`);
+
+          return latestDeployment.artifact_url;
+
+        result-encoding: string
+
+    - name: Download Pages artifact
       uses: actions/download-artifact@v3
       with:
-        name: github-pages
-        path: prevDeploy
+        url: ${{ steps.latest_deployment.outputs.result }}
+        path: pages-artifact
 
     - name: Get current date in JST
       id: date
