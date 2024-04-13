@@ -32,13 +32,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Get current date
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: github-pages
+        path: out
+
+    - name: Get current date in JST
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
+      run: |
+        echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
+      shell: bash
 
     - name: Build HTML
       run: |
-        mkdir out
+        find ./out/ -type f -delete
         echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
 
     - name: Upload artifact

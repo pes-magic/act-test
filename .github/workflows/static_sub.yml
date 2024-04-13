@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages sub2
+name: Deploy static content to Pages sub1
 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -28,20 +28,30 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Get current date
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: github-pages
+        path: out
+
+    - name: Get current date in JST
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
+      run: |
+        echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
+      shell: bash
 
     - name: Build HTML
       run: |
-        mkdir out
+        mkdir -p out/sub1
         mkdir -p out/sub2
+        find ./out/sub*/ -type f -delete
+        echo "<html><body>This sub page 1 was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/sub1/index.html
         echo "<html><body>This sub page 2 was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/sub2/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: out/sub2
+        path: out
 
     - name: Deploy to GitHub Pages
       id: deployment
