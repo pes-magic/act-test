@@ -32,22 +32,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Download Content
-      run: |
-        mkdir -p out
-        curl https://pes-magic.github.io/act-test/index.html --output ./out/index.html
-
-    # - name: Get current date in JST
-    #   id: date
-    #   run: |
-    #     echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
-    #   shell: bash
-
-    # - name: Build HTML
+    # - name: Download Content
     #   run: |
     #     mkdir -p out
-    #     find ./out/ -type f -delete
-    #     echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
+    #     curl https://pes-magic.github.io/act-test/index.html --output ./out/index.html
+
+    - name: Get current date in JST
+      id: date
+      run: |
+        echo "::set-output name=date::$(TZ='Asia/Tokyo' date +'%Y-%m-%d %H:%M:%S')"
+      shell: bash
+
+    - name: Build HTML
+      run: |
+        mkdir -p out
+        find ./out/ -type f -delete
+        echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
+        mkdir -p out/sub
+        echo "<html><body>This sub page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/sub/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
@@ -58,23 +60,23 @@ jobs:
       id: deployment
       uses: actions/deploy-pages@v2
 
-    - name: List artifacts
-      id: artifacts2
-      uses: actions/github-script@v6
-      with:
-        script: |
-          let artifacts = await github.rest.actions.listArtifactsForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
+    # - name: List artifacts
+    #   id: artifacts2
+    #   uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       let artifacts = await github.rest.actions.listArtifactsForRepo({
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo
+    #       });
 
-          let artifactNames = artifacts.data.artifacts.map(a => a.name);
-          console.log(`Found artifacts: ${artifactNames.join(", ")}`);
+    #       let artifactNames = artifacts.data.artifacts.map(a => a.name);
+    #       console.log(`Found artifacts: ${artifactNames.join(", ")}`);
 
-          return artifactNames;
+    #       return artifactNames;
 
-        result-encoding: string
+    #     result-encoding: string
 
-    - name: Print artifact names
-      run: |
-        echo "Artifact names: ${{ steps.artifacts2.outputs.result }}"
+    # - name: Print artifact names
+    #   run: |
+    #     echo "Artifact names: ${{ steps.artifacts2.outputs.result }}"
