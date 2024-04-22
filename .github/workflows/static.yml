@@ -70,7 +70,7 @@ jobs:
         echo "<html><body>This page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/index.html
 
     - name: Build Sub HTML
-      if: steps.cache_sub.outputs.cache-hit != 'true'
+      if: steps.cache_sub.outputs.cache-hit != 'true' || ${{ github.event_name == 'workflow_dispatch' }}
       run: |
         mkdir -p out/sub
         echo "<html><body>This sub page was deployed on ${{ steps.date.outputs.date }}</body></html>" > out/sub/index.html
