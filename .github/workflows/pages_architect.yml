@@ -22,7 +22,6 @@ jobs:
           let latestDeployment = deployments.data[0];
           console.log(`Latest deployment: ${latestDeployment.deployment_id}`);
           return latestDeployment.artifact_url;
-      result-encoding: string
 
     - name: Download Pages artifact
       uses: actions/download-artifact@v3
