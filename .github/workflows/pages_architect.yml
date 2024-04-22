@@ -9,14 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - name: Get latest Pages deployment
+      id: deployment
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          let deployments = await github.rest.repos.listPagesDeployments({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          let latestDeployment = deployments.data[0];
+          console.log(`Latest deployment: ${latestDeployment.deployment_id}`);
+          return latestDeployment.artifact_url;
+      result-encoding: string
 
-    - name: Get GitHub Pages Architect
-      id: metadata
-      run: |
-        architect=$(git remote show origin | grep 'GitHub Pages' | sed 's/.*GitHub Pages //; s/ //')
-        echo "::set-output name=architect::$architect"
-
-    - name: Show Architect
-      run: echo "GitHub Pages Architect is ${{ steps.metadata.outputs.architect }}"
+    - name: Download Pages artifact
+      uses: actions/download-artifact@v3
+      with:
+        url: ${{ steps.deployment.outputs.result }}
+        path: pages-artifact
+        token: ${{ secrets.GITHUB_TOKEN }}
